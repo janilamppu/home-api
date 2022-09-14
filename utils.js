@@ -9,7 +9,7 @@ exports.weatherDescriptions = {
 	Snow: 'Lumisadetta',
 };
 
-exports.mapIkeaDevices = (devices) => {
+exports.mapTradfriDevices = (devices) => {
 	return devices.map((device) => {
 		switch (device.type) {
 			case 'Plug':

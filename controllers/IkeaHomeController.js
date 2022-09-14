@@ -1,6 +1,6 @@
 const tradfri = require('ikea-tradfri');
 const config = require('../config.json');
-const { mapIkeaDevices } = require('../utils');
+const { mapTradfriDevices } = require('../utils');
 const { gatewayAddress, credentials, allDevices } = config.tradfri;
 
 const getHomeDevices = async () => {
@@ -9,7 +9,7 @@ const getHomeDevices = async () => {
 		await client.connect();
 		const deviceList = client.device(allDevices);
 		client.close();
-		return mapIkeaDevices(deviceList);
+		return mapTradfriDevices(deviceList);
 	} catch (err) {
 		client.close();
 		console.error('Tradfri error:', err);
