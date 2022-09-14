@@ -1,0 +1,24 @@
+{
+  "tesla": {
+    "apiUrl": ""
+  },
+  "weather": {
+    "apiUrl": "",
+    "appId": "",
+    "city": "Helsinki",
+    "units": "metric"
+  },
+  "nameDays": {
+    "apiUrl": ""
+  },
+  "tradfri": {
+    "devices": [
+      "pistorasia",
+      "valo"
+    ],
+    "credentials": {
+      "identity": "tradfri_XXX",
+      "psk": "XXX"
+    }
+  }
+}
