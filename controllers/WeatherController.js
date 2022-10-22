@@ -14,9 +14,7 @@ exports.getWeatherData = async function () {
 		let response = await axios.get(url);
 		return formResponse(response.data);
 	} catch (err) {
-		return {
-			error: err.message || 'unknown error',
-		};
+		console.error('Error (WeatherAPI):', err);
 	}
 };
 

@@ -1,4 +1,5 @@
 const express = require('express');
+const { getChores, addChore } = require('./controllers/ChoresController');
 const {
 	getHomeDevices,
 	toggleDevices,
@@ -49,4 +50,20 @@ app.post('/toggle-devices', async (req, res) => {
 
 app.listen(port, () => {
 	console.log(`Home API listening on port ${port}`);
+});
+
+app.get('/chores', async (req, res) => {
+	const { activity } = req.query;
+	const chores = await getChores(activity);
+	res.json(chores);
+});
+
+app.post('/chores', async (req, res) => {
+	const { person, activity } = req.body;
+	if (!person || !activity) {
+		res.status(400).json({ error: 'Missing person or activity' });
+		return;
+	}
+	const response = await addChore(person, activity);
+	res.json({ success: response });
 });
