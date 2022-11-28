@@ -2,7 +2,7 @@
 
 ## Description
 
-JS, Node & Express based REST API to be used with a home dashboard application (used only in a local network)
+JS, Node & Express based REST API **POC (proof of concept)** to be used with a home dashboard application. **Only to be used in an internal network - not for production type of use.**
 
 ## Functions
 
@@ -36,7 +36,7 @@ Format:
 
 ```GET /tesla```
 
-Queries a local Teslamate API to fetch data from the car (Tesla) such as current state of charge, locking state, charging information, etc.
+Queries a local [Teslamate API](https://github.com/tobiasehlert/teslamateapi) to fetch data from the car (Tesla) such as current state of charge, locking state, charging information, etc.
 
 ```
 {
