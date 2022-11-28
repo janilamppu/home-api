@@ -2,6 +2,8 @@ const axios = require('axios');
 const moment = require('moment');
 const { weatherDescriptions } = require('../utils');
 const config = require('../config.json');
+const { Logger } = require('../logger');
+const log = new Logger();
 
 exports.getWeatherData = async function () {
 	try {
@@ -14,7 +16,7 @@ exports.getWeatherData = async function () {
 		let response = await axios.get(url);
 		return formResponse(response.data);
 	} catch (err) {
-		console.error('Error (WeatherAPI):', err);
+		log.error('Error (WeatherAPI):', err);
 	}
 };
 
@@ -32,7 +34,7 @@ const formResponse = (rawResponse) => {
 
 const getWeatherDescription = (desc) => {
 	if (!weatherDescriptions[desc]) {
-		console.log(`${desc} is missing from weather translations!`);
+		log.info(`${desc} is missing from weather translations!`);
 		return 'Ei tiedossa';
 	} else {
 		return weatherDescriptions[desc];

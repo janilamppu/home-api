@@ -1,5 +1,7 @@
 const axios = require('axios');
 const config = require('../config.json');
+const { Logger } = require('../logger');
+const log = new Logger();
 
 const getCarData = async () => {
 	try {
@@ -28,7 +30,7 @@ const getCarData = async () => {
 			chargerCurrent: charger_actual_current,
 		};
 	} catch (err) {
-		console.error('Error (TeslaAPI)', err);
+		log.error('Error (TeslaAPI)', err);
 	}
 };
 

@@ -1,5 +1,10 @@
 const express = require('express');
-const { getChores, addChore } = require('./controllers/ChoresController');
+const {
+	getChores,
+	addChore,
+	generateChoresLastDone,
+	getNotRecentlyDoneChores,
+} = require('./controllers/ChoresController');
 const {
 	getHomeDevices,
 	toggleDevices,
@@ -9,6 +14,11 @@ const { getCarData } = require('./controllers/TeslaController');
 const { getWeatherData } = require('./controllers/WeatherController');
 const app = express();
 const port = 3000;
+const cron = require('node-cron');
+const fs = require('fs');
+const config = require('./config.json');
+const { Logger } = require('./logger');
+const log = new Logger();
 
 app.use(express.json());
 
@@ -29,6 +39,7 @@ app.get('/home-data', async (req, res) => {
 		tesla: await getCarData(),
 		weather: await getWeatherData(),
 		nameDays: await getNameDay(),
+		choresNotDoneRecently: await getNotRecentlyDoneChores(),
 	};
 	res.json(values);
 });
@@ -49,12 +60,17 @@ app.post('/toggle-devices', async (req, res) => {
 });
 
 app.listen(port, () => {
-	console.log(`Home API listening on port ${port}`);
+	log.info(`Home API listening on port ${port}`);
+	if (!fs.existsSync(config.chores.lastDoneFile)) generateChoresLastDone();
 });
 
 app.get('/chores', async (req, res) => {
-	const { activity } = req.query;
-	const chores = await getChores(activity);
+	const { activity, person } = req.query;
+	if (activity && !config.chores.choreTypes.includes(activity)) {
+		res.status(400).json({ error: 'Invalid activity' });
+		return;
+	}
+	const chores = await getChores(activity, person);
 	res.json(chores);
 });
 
@@ -64,6 +80,14 @@ app.post('/chores', async (req, res) => {
 		res.status(400).json({ error: 'Missing person or activity' });
 		return;
 	}
+	if (!config.chores.choreTypes.includes(activity)) {
+		res.status(400).json({ error: 'Invalid activity' });
+	}
 	const response = await addChore(person, activity);
 	res.json({ success: response });
+});
+
+cron.schedule('0 9 * * *', async () => {
+	log.info('Generating chores last done list');
+	await generateChoresLastDone();
 });

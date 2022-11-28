@@ -1,9 +1,11 @@
 const tradfri = require('ikea-tradfri');
 const config = require('../config.json');
+const { Logger } = require('../logger');
 const { mapTradfriDevices } = require('../utils');
 const { gatewayAddress, credentials, allDevices } = config.tradfri;
 
 const client = new tradfri(gatewayAddress, credentials);
+const log = new Logger();
 
 const getHomeDevices = async () => {
 	try {
@@ -11,7 +13,7 @@ const getHomeDevices = async () => {
 		const deviceList = client.device(allDevices);
 		return mapTradfriDevices(deviceList);
 	} catch (err) {
-		console.error('Error (Tradfri):', err);
+		log.error('Error (Tradfri):', err);
 	}
 };
 
@@ -21,12 +23,15 @@ const toggleDevices = async (deviceNames, state) => {
 	try {
 		await client.connect();
 		const devices = client.device(deviceNames);
+		log.info(
+			`Setting devices ${deviceNames.join(', ')} to ${state ? 'on' : 'off'}`
+		);
 		for (const device of devices) {
 			await device.switch(state);
 		}
 		return true;
 	} catch (err) {
-		console.error('Error (Tradfri):', err);
+		log.error('Error (Tradfri):', err);
 		return false;
 	}
 };
